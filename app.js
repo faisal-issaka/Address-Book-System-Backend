@@ -1,20 +1,25 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+/* eslint-disable import/extensions */
+import express, { json, urlencoded } from 'express';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+import cookieParser from 'cookie-parser';
+import logger from 'morgan';
+import dotenv from 'dotenv';
+import router from './routes/index.js';
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const dirnameVar = dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: join(dirnameVar, './env') });
 
-var app = express();
+const app = express();
+const PORT = process.env.PORT || 3000;
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(json());
+app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/api', router);
 
-module.exports = app;
+app.listen(PORT);
+
+export default app;

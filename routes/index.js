@@ -1,9 +1,10 @@
-var express = require('express');
-var router = express.Router();
+/* eslint-disable import/extensions */
+import express from 'express';
+import { Login, Register } from '../controllers/auth.js';
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+const router = express.Router();
 
-module.exports = router;
+router.post('/register', Register);
+router.post('/login', Login);
+
+export default router;
