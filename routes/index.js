@@ -1,9 +1,11 @@
-var express = require('express');
-var router = express.Router();
+/* eslint-disable import/extensions */
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+import express from 'express';
+
+const router = express.Router();
+
+router.get('/', () => {
+  router.redirect('/register');
 });
 
-module.exports = router;
+export default router;
