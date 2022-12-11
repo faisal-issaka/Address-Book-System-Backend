@@ -1,25 +1,24 @@
 /* eslint-disable import/extensions */
 import express, { json, urlencoded } from 'express';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
+import helmet from 'helmet';
+import cors from 'cors';
+import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-import logger from 'morgan';
-import dotenv from 'dotenv';
-import router from './routes/index.js';
-
-const dirnameVar = dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: join(dirnameVar, './env') });
+import authRouter from './routes/authRoutes.js';
+import contactRouter from './routes/contactRoutes.js';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-app.use(logger('dev'));
+app.use(helmet());
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
+app.use(cors());
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use('/api', router);
-
-app.listen(PORT);
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/contact', contactRouter);
 
 export default app;
