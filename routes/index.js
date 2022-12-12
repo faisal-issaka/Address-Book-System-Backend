@@ -5,7 +5,7 @@ import express from 'express';
 const router = express.Router();
 
 router.get('/', () => {
-  router.redirect('/register');
+  router.sendStatus(200);
 });
 
 export default router;
