@@ -18,7 +18,6 @@ const contactModel = new Schema({
     type: String,
     lowercase: true,
     unique: true,
-    required: true,
   },
   address: {
     type: String,

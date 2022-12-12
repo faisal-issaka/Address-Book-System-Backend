@@ -77,8 +77,8 @@ export const removeContacts = async (req, res) => {
 };
 
 export const updateContact = async (req, res) => {
-  const { id, ...otherData } = req.body;
-  await ContactModel.updateOne({ _id: id }, otherData)
+  const { phone, ...otherData } = req.body;
+  await ContactModel.updateOne({ phone }, otherData)
     .then((contact) => {
       res.status(200).json({
         status: 'success',
