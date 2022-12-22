@@ -2,9 +2,9 @@
 import { ContactModel } from '../models/index.js';
 import { getErrorData } from '../utils/authUtils.js';
 
-export const addContact = async (req, res) => {
+export const addContact = (req, res) => {
   const data = req.body;
-  await ContactModel.create(data).then((contact) => {
+  ContactModel.create(data).then((contact) => {
     res.status(201).json({
       status: 'success',
       data: {
@@ -18,9 +18,9 @@ export const addContact = async (req, res) => {
   });
 };
 
-export const addContacts = async (req, res) => {
+export const addContacts = (req, res) => {
   const data = req.body;
-  await ContactModel.insertMany(data).then((contacts) => {
+  ContactModel.insertMany(data).then((contacts) => {
     res.status(200).json({
       status: 'success',
       data: {
@@ -34,9 +34,9 @@ export const addContacts = async (req, res) => {
   });
 };
 
-export const removeContact = async (req, res) => {
+export const removeContact = (req, res) => {
   const { phone } = req.body;
-  await ContactModel.deleteOne({ phone })
+  ContactModel.deleteOne({ phone })
     .then((contacts) => {
       res.status(200).json({
         status: 'success',
@@ -55,9 +55,9 @@ export const removeContact = async (req, res) => {
     });
 };
 
-export const removeContacts = async (req, res) => {
+export const removeContacts = (req, res) => {
   const data = req.body;
-  await ContactModel.deleteMany({ phone: { $in: data } })
+  ContactModel.deleteMany({ phone: { $in: data } })
     .then((contacts) => {
       res.status(200).json({
         status: 'success',
@@ -76,9 +76,9 @@ export const removeContacts = async (req, res) => {
     });
 };
 
-export const updateContact = async (req, res) => {
+export const updateContact = (req, res) => {
   const { phone, ...otherData } = req.body;
-  await ContactModel.updateOne({ phone }, otherData)
+  ContactModel.updateOne({ phone }, otherData)
     .then((contact) => {
       res.status(200).json({
         status: 'success',
@@ -97,8 +97,8 @@ export const updateContact = async (req, res) => {
     });
 };
 
-export const getContacts = async (req, res) => {
-  await ContactModel.find({}, 'phone email address, name state createdAt')
+export const getContacts = (req, res) => {
+  ContactModel.find({}, 'phone email address, name state createdAt')
     .then((contacts) => {
       res.status(200).json({
         status: 'success',
@@ -117,9 +117,9 @@ export const getContacts = async (req, res) => {
     });
 };
 
-export const getContact = async (req, res) => {
+export const getContact = (req, res) => {
   const { id } = req.params;
-  await ContactModel.findOne({ id }, 'phone email address name state createdAt')
+  ContactModel.findOne({ id }, 'phone email address name state createdAt')
     .then((contacts) => {
       res.status(200).json({
         status: 'success',

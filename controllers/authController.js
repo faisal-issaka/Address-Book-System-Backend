@@ -15,7 +15,7 @@ export const Register = async (req, res) => {
   const credentials = req.body;
   credentials.password = await getHashedPassword(credentials?.password);
 
-  await UserModel.create(credentials).then((user) => {
+  UserModel.create(credentials).then((user) => {
     res.status(201).json({
       status: 'success',
       data: {
@@ -29,9 +29,9 @@ export const Register = async (req, res) => {
   });
 };
 
-export const Login = async (req, res) => {
+export const Login = (req, res) => {
   const credentials = req.body;
-  await UserModel.findOne({ email: credentials.email }, '+password email').then(
+  UserModel.findOne({ email: credentials.email }, '+password email').then(
     async (user) => {
       if (user) {
         const passwordIsValid = await bcrypt.compare(credentials.password, user.password);
