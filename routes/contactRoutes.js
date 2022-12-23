@@ -23,7 +23,7 @@ router.post('/add-contacts', verifyToken, validateCredentials, addContacts);
 router.delete('/remove-contact', verifyToken, validateCredentials, removeContact);
 router.delete('/remove-contacts', verifyToken, validateCredentials, removeContacts);
 
-router.post('/update-contact', verifyToken, validateCredentials, updateContact);
+router.patch('/update-contact', verifyToken, validateCredentials, updateContact);
 // router.post('/update-contacts', verifyToken, validateCredentials, updateContacts);
 
 router.get('/get-contacts', verifyToken, validateCredentials, getContacts);
