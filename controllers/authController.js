@@ -10,19 +10,15 @@ import {
   validateUser,
   userExists,
 } from '../utils/authUtils.js';
+import { successResponse, successResponseWithData, unauthorizedResponse } from '../utils/apiResponse.js';
 
 export const Register = async (req, res) => {
   const credentials = req.body;
   credentials.password = await getHashedPassword(credentials?.password);
 
   UserModel.create(credentials).then((user) => {
-    res.status(201).json({
-      status: 'success',
-      data: {
-        message: 'User created successfully',
-        ...generateTokens(user),
-      },
-    });
+    const message = 'User created successfully';
+    return successResponseWithData(res, message, { ...generateTokens(user) });
   }).catch((err) => {
     const errorData = getErrorData(err);
     res.status(400).json(errorData);
@@ -37,10 +33,8 @@ export const Login = (req, res) => {
         const passwordIsValid = await bcrypt.compare(credentials.password, user.password);
         validateUser(passwordIsValid, user, res);
       } else {
-        res.status(400).json({
-          status: 'failed',
-          data: { message: 'Invalid Phone Number or Password' },
-        });
+        const message = 'Invalid Phone Number or Password';
+        return successResponse(res, message);
       }
     },
   ).catch((err) => {
@@ -53,29 +47,16 @@ export const RefreshToken = async (req, res) => {
   const { token } = req.body;
   jwt.verify(token, process.env.REFRESH_TOKEN_KEY, async (err, data) => {
     if (err) {
-      return res.status(401).json({
-        status: 'failed',
-        data: {
-          message: 'token not valid',
-        },
-      });
+      const message = 'token not valid';
+      return unauthorizedResponse(res, message);
     }
     const user = await userExists(data.user_id);
     if (user) {
-      res.status(200).json({
-        status: 'success',
-        data: {
-          message: 'Token refreshed successfully',
-          ...generateTokens(user),
-        },
-      });
-    } else {
-      res.status(401).json({
-        status: 'failed',
-        data: {
-          message: 'token not valid',
-        },
-      });
+      const message = 'Token refreshed successfully';
+      return successResponseWithData(res, message, { ...generateTokens(user) });
     }
+
+    const message = 'token not valid';
+    return unauthorizedResponse(res, message);
   });
 };
