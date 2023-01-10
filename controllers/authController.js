@@ -2,7 +2,6 @@
 /* eslint-disable import/extensions */
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { UserModel } from '../models/index.js';
 import {
   getHashedPassword,
   generateTokens,
@@ -11,36 +10,37 @@ import {
   userExists,
 } from '../utils/authUtils.js';
 import { successResponse, successResponseWithData, unauthorizedResponse } from '../utils/apiResponse.js';
+import { createUser, findUser } from '../services/authServices.js';
 
 export const Register = async (req, res) => {
   const credentials = req.body;
-  credentials.password = await getHashedPassword(credentials?.password);
-
-  UserModel.create(credentials).then((user) => {
+  try {
+    credentials.password = await getHashedPassword(credentials?.password);
+    const user = await createUser(credentials);
     const message = 'User created successfully';
     return successResponseWithData(res, message, { ...generateTokens(user) });
-  }).catch((err) => {
+  } catch (err) {
     const errorData = getErrorData(err);
     res.status(400).json(errorData);
-  });
+  }
 };
 
-export const Login = (req, res) => {
+export const Login = async (req, res) => {
   const credentials = req.body;
-  UserModel.findOne({ email: credentials.email }, '+password email').then(
-    async (user) => {
-      if (user) {
-        const passwordIsValid = await bcrypt.compare(credentials.password, user.password);
-        validateUser(passwordIsValid, user, res);
-      } else {
-        const message = 'Invalid Phone Number or Password';
-        return successResponse(res, message);
-      }
-    },
-  ).catch((err) => {
+  const data = '+password email';
+  try {
+    const user = await findUser(credentials.email, data);
+    if (user) {
+      const passwordIsValid = await bcrypt.compare(credentials.password, user.password);
+      validateUser(passwordIsValid, user, res);
+    } else {
+      const message = 'Invalid Phone Number or Password';
+      return successResponse(res, message);
+    }
+  } catch (err) {
     const errorData = getErrorData(err);
     res.status(400).json(errorData);
-  });
+  }
 };
 
 export const RefreshToken = async (req, res) => {

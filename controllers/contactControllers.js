@@ -1,89 +1,91 @@
 /* eslint-disable import/extensions */
-import { ContactModel } from '../models/index.js';
+import {
+  createContact, createMultipleContacts, deleteContact, deleteMultipleContacts,
+} from '../services/contactServices.js';
 import { errorResponse, successResponseWithData } from '../utils/apiResponse.js';
 import { getErrorData } from '../utils/authUtils.js';
 
-export const addContact = (req, res) => {
+export const addContact = async (req, res) => {
   const data = req.body;
-  ContactModel.create(data).then((contact) => {
+  try {
+    const contact = await createContact(data);
     const message = 'Contact added successfully';
     return successResponseWithData(res, message, contact);
-  }).catch((err) => {
+  } catch (err) {
     const errorData = getErrorData(err);
     res.status(400).json(errorData);
-  });
+  }
 };
 
-export const addContacts = (req, res) => {
+export const addContacts = async (req, res) => {
   const data = req.body;
-  ContactModel.insertMany(data).then((contacts) => {
+  try {
+    const contacts = await createMultipleContacts(data);
     const message = 'Contacts added successfully';
     return successResponseWithData(res, message, contacts);
-  }).catch((err) => {
+  } catch (err) {
     const errorData = getErrorData(err);
     res.status(400).json(errorData);
-  });
+  }
 };
 
-export const removeContact = (req, res) => {
+export const removeContact = async (req, res) => {
   const { phone } = req.body;
-  ContactModel.deleteOne({ phone })
-    .then((contacts) => {
-      const message = 'Contact removed successfully';
-      return successResponseWithData(res, message, contacts);
-    }).catch(() => {
-      const message = 'An Error Occurred';
-      return errorResponse(res, message);
-    });
+  try {
+    const contacts = await deleteContact(phone);
+    const message = 'Contact removed successfully';
+    return successResponseWithData(res, message, contacts);
+  } catch (err) {
+    const message = 'An Error Occurred';
+    return errorResponse(res, message);
+  }
 };
 
-export const removeContacts = (req, res) => {
+export const removeContacts = async (req, res) => {
   const data = req.body;
-  ContactModel.deleteMany({ phone: { $in: data } })
-    .then((contacts) => {
-      const message = 'Contact removed successfully';
-      return successResponseWithData(res, message, contacts);
-    }).catch(() => {
-      res.status(400).json({
-        status: 'failed',
-        data: {
-          message: 'An Error Occurred',
-        },
-      });
-    });
+  try {
+    const contacts = await deleteMultipleContacts(data);
+    const message = 'Contact removed successfully';
+    return successResponseWithData(res, message, contacts);
+  } catch (err) {
+    const message = 'An Error Occurred';
+    return errorResponse(res, message);
+  }
 };
 
-export const updateContact = (req, res) => {
+export const updateContact = async (req, res) => {
   const { phone, ...otherData } = req.body;
-  ContactModel.updateOne({ phone }, otherData)
-    .then((contact) => {
-      const message = 'Contact updated successfully';
-      return successResponseWithData(res, message, contact);
-    }).catch(() => {
-      const message = 'An Error Occurred';
-      return errorResponse(res, message);
-    });
+  try {
+    const contact = await updateContact(phone, otherData);
+    const message = 'Contact updated successfully';
+    return successResponseWithData(res, message, contact);
+  } catch (err) {
+    const message = 'An Error Occurred';
+    return errorResponse(res, message);
+  }
 };
 
-export const getContacts = (req, res) => {
-  ContactModel.find({}, 'phone email address, name state createdAt')
-    .then((contacts) => {
-      const message = 'Contacts retrieved successfully';
-      return successResponseWithData(res, message, contacts);
-    }).catch(() => {
-      const message = 'An Error Occurred';
-      return errorResponse(res, message);
-    });
+export const getContacts = async (req, res) => {
+  const data = 'phone email address name state createdAt';
+  try {
+    const contacts = await getContacts(data);
+    const message = 'Contacts retrieved successfully';
+    return successResponseWithData(res, message, contacts);
+  } catch (err) {
+    const message = 'An Error Occurred';
+    return errorResponse(res, message);
+  }
 };
 
-export const getContact = (req, res) => {
+export const getContact = async (req, res) => {
   const { id } = req.params;
-  ContactModel.findOne({ id }, 'phone email address name state createdAt')
-    .then((contacts) => {
-      const message = 'Contact retrieved successfully';
-      return successResponseWithData(res, message, contacts);
-    }).catch(() => {
-      const message = 'An Error Occurred';
-      return errorResponse(res, message);
-    });
+  const data = 'phone email address name state createdAt';
+  try {
+    const contacts = await getContact(id, data);
+    const message = 'Contact retrieved successfully';
+    return successResponseWithData(res, message, contacts);
+  } catch (err) {
+    const message = 'An Error Occurred';
+    return errorResponse(res, message);
+  }
 };
