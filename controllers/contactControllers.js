@@ -13,7 +13,7 @@ export const addContact = async (req, res) => {
     return successResponseWithData(res, message, contact);
   } catch (err) {
     const errorData = getErrorData(err);
-    res.status(400).json(errorData);
+    return res.status(400).json(errorData);
   }
 };
 
@@ -25,7 +25,7 @@ export const addContacts = async (req, res) => {
     return successResponseWithData(res, message, contacts);
   } catch (err) {
     const errorData = getErrorData(err);
-    res.status(400).json(errorData);
+    return res.status(400).json(errorData);
   }
 };
 

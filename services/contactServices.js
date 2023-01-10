@@ -9,7 +9,6 @@ export const createMultipleContacts = async (data) => ContactModel.insertMany(da
 export const getContact = async (id, data) => ContactModel.findOne({ id }, data);
 export const getContacts = async (data) => ContactModel.find({}, data);
 
-
 // !update
 export const updateContact = async (phone, otherData) => ContactModel.updateOne({ phone }, otherData);
 
