@@ -1,6 +1,6 @@
 /* eslint-disable import/extensions */
 import {
-  createContact, createMultipleContacts, deleteContact, deleteMultipleContacts,
+  createContact, createMultipleContacts, deleteContact, deleteMultipleContacts, getContact, getContacts, updateContact,
 } from '../services/contactServices.js';
 import { errorResponse, successResponseWithData } from '../utils/apiResponse.js';
 import { getErrorData } from '../utils/authUtils.js';
@@ -53,7 +53,7 @@ export const removeContacts = async (req, res) => {
   }
 };
 
-export const updateContact = async (req, res) => {
+export const updateSingleContact = async (req, res) => {
   const { phone, ...otherData } = req.body;
   try {
     const contact = await updateContact(phone, otherData);
@@ -65,7 +65,7 @@ export const updateContact = async (req, res) => {
   }
 };
 
-export const getContacts = async (req, res) => {
+export const getAllContacts = async (req, res) => {
   const data = 'phone email address name state createdAt';
   try {
     const contacts = await getContacts(data);
@@ -77,7 +77,7 @@ export const getContacts = async (req, res) => {
   }
 };
 
-export const getContact = async (req, res) => {
+export const getSingleContact = async (req, res) => {
   const { id } = req.params;
   const data = 'phone email address name state createdAt';
   try {
@@ -85,6 +85,7 @@ export const getContact = async (req, res) => {
     const message = 'Contact retrieved successfully';
     return successResponseWithData(res, message, contacts);
   } catch (err) {
+    console.error(err);
     const message = 'An Error Occurred';
     return errorResponse(res, message);
   }
