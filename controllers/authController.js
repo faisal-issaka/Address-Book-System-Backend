@@ -9,7 +9,7 @@ import {
   validateUser,
   userExists,
 } from '../utils/authUtils.js';
-import { successResponse, successResponseWithData, unauthorizedResponse } from '../utils/apiResponse.js';
+import { errorResponse, successResponse, successResponseWithData, unauthorizedResponse } from '../utils/apiResponse.js';
 import { createUser, findUser } from '../services/authServices.js';
 
 export const Register = async (req, res) => {
