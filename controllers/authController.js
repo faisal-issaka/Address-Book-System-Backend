@@ -35,7 +35,7 @@ export const Login = async (req, res) => {
       validateUser(passwordIsValid, user, res);
     } else {
       const message = 'Invalid Phone Number or Password';
-      return successResponse(res, message);
+      return errorResponse(res, message);
     }
   } catch (err) {
     const errorData = getErrorData(err);
