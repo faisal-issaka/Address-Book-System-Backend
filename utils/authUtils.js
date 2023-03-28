@@ -3,6 +3,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { UserModel } from '../models/index.js';
+import { errorResponse, successResponseWithData } from './apiResponse.js';
 
 export const generateTokens = (user) => {
   if (user) {
@@ -63,30 +64,22 @@ export const getErrorData = (err) => {
 
 export const validateUser = (passwordIsValid, user, res) => {
   if (passwordIsValid) {
-    res.status(200).json({
-      status: 'success',
-      data: {
-        message: 'User logged in successfully',
-        ...generateTokens(user),
-      },
-    });
-  } else {
-    res.status(400).json({
-      status: 'failed',
-      data: {
-        message: 'Invalid Email Address or Password',
-      },
-    });
+    const data = { ...user._doc, ...generateTokens(user) };
+    delete data.password;
+    return successResponseWithData(res, 'User logged in successfully', data);
   }
+  return errorResponse(400, 'Invalid Email Address or Password');
 };
 
 export const userExists = async (id) => {
   let userData = {};
-  await UserModel.findOne({ _id: id }, '_id email').then((user) => {
-    userData = user;
-  }).catch((err) => {
-    console.error(err);
-  });
+  await UserModel
+    .findOne({ _id: id }, '_id email firstName lastName gender mobileNumber picture')
+    .then((user) => {
+      userData = user;
+    }).catch((err) => {
+      console.error(err);
+    });
 
   return userData;
 };

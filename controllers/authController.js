@@ -28,7 +28,7 @@ export const Register = async (req, res) => {
 
 export const Login = async (req, res) => {
   const credentials = req.body;
-  const data = '+password email';
+  const data = '+password email firstName lastName gender mobileNumber picture';
   try {
     const user = await findUser(credentials.email, data);
     if (user) {
@@ -59,10 +59,18 @@ export const UpdatePassword = async (user, req, res, _next) => {
   const data = req.body;
   try {
     const password = await getHashedPassword(data?.password);
-    console.log(password);
     const updatedUser = await updateUser(user?.id, { password });
     const message = 'Password updated successfully';
     return successResponseWithData(res, message, updatedUser);
+  } catch (err) {
+    return errorResponse(res, 'An error occurred while updating...');
+  }
+};
+
+export const RetrieveUser = async (user, req, res, _next) => {
+  try {
+    const message = 'User retrieved successfully';
+    return successResponseWithData(res, message, user);
   } catch (err) {
     return errorResponse(res, 'An error occurred while updating...');
   }
