@@ -10,22 +10,19 @@ import {
   updateSingleContact,
   // updateContacts,
 } from '../controllers/contactControllers.js';
-import {
-  validateCredentials,
-  verifyToken,
-} from '../middlewares/index.js';
+import { verifyToken } from '../middlewares/index.js';
 
 const router = express.Router();
 
-router.post('/add-contact', verifyToken, validateCredentials, addContact);
-router.post('/add-contacts', verifyToken, validateCredentials, addContacts);
+router.post('/add-contact', verifyToken, addContact);
+router.post('/add-contacts', verifyToken, addContacts);
 
-router.delete('/remove-contact', verifyToken, validateCredentials, removeContact);
-router.delete('/remove-contacts', verifyToken, validateCredentials, removeContacts);
+router.delete('/remove-contact', verifyToken, removeContact);
+router.delete('/remove-contacts', verifyToken, removeContacts);
 
-router.patch('/update-contact', verifyToken, validateCredentials, updateSingleContact);
+router.patch('/update-contact', verifyToken, updateSingleContact);
 
-router.get('/get-contacts', verifyToken, validateCredentials, getAllContacts);
-router.get('/get-contact/:id', verifyToken, validateCredentials, getSingleContact);
+router.get('/get-contacts', verifyToken, getAllContacts);
+router.get('/get-contact/:id', verifyToken, getSingleContact);
 
 export default router;

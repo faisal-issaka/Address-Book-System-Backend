@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable consistent-return */
 /* eslint-disable import/extensions */
 import jwt from 'jsonwebtoken';
@@ -9,8 +10,8 @@ import {
   validateUser,
   userExists,
 } from '../utils/authUtils.js';
-import { errorResponse, successResponse, successResponseWithData, unauthorizedResponse } from '../utils/apiResponse.js';
-import { createUser, findUser } from '../services/authServices.js';
+import { errorResponse, successResponseWithData, unauthorizedResponse } from '../utils/apiResponse.js';
+import { createUser, findUser, updateUser } from '../services/authServices.js';
 
 export const Register = async (req, res) => {
   const credentials = req.body;
@@ -40,6 +41,30 @@ export const Login = async (req, res) => {
   } catch (err) {
     const errorData = getErrorData(err);
     res.status(400).json(errorData);
+  }
+};
+
+export const UpdateUser = async (user, req, res, _next) => {
+  const data = req.body;
+  try {
+    const updatedUser = await updateUser(user?.id, data);
+    const message = 'User updated successfully';
+    return successResponseWithData(res, message, updatedUser);
+  } catch (err) {
+    return errorResponse(res, 'An error occurred while updating...');
+  }
+};
+
+export const UpdatePassword = async (user, req, res, _next) => {
+  const data = req.body;
+  try {
+    const password = await getHashedPassword(data?.password);
+    console.log(password);
+    const updatedUser = await updateUser(user?.id, { password });
+    const message = 'Password updated successfully';
+    return successResponseWithData(res, message, updatedUser);
+  } catch (err) {
+    return errorResponse(res, 'An error occurred while updating...');
   }
 };
 

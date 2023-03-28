@@ -1,6 +1,13 @@
+/* eslint-disable max-len */
 /* eslint-disable import/extensions */
 import {
-  createContact, createMultipleContacts, deleteContact, deleteMultipleContacts, getContact, getContacts, updateContact,
+  createContact,
+  createMultipleContacts,
+  deleteContact,
+  deleteMultipleContacts,
+  getContact,
+  getContacts,
+  updateContact,
 } from '../services/contactServices.js';
 import { errorResponse, successResponseWithData } from '../utils/apiResponse.js';
 import { getErrorData } from '../utils/authUtils.js';

@@ -13,6 +13,25 @@ const userModel = new Schema({
     select: false,
     required: true,
   },
+  picture: {
+    type: String,
+  },
+  firstName: {
+    type: String,
+    trim: true,
+  },
+  lastName: {
+    type: String,
+    trim: true,
+  },
+  mobileNumber: {
+    type: String,
+    trim: true,
+  },
+  gender: {
+    type: String,
+    trim: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now(),
