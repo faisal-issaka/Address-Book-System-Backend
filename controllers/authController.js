@@ -10,16 +10,26 @@ import {
   validateUser,
   userExists,
 } from '../utils/authUtils.js';
-import { errorResponse, successResponseWithData, unauthorizedResponse } from '../utils/apiResponse.js';
+import {
+  errorResponse, errorResponseWithData, successResponseWithData, unauthorizedResponse,
+} from '../utils/apiResponse.js';
 import { createUser, findUser, updateUser } from '../services/authServices.js';
 
 export const Register = async (req, res) => {
   const credentials = req.body;
+  const data = '+password email';
   try {
+    const findOneUser = await findUser(credentials.email, data);
+    if (findOneUser) {
+      const message = `Email ${credentials.email} already exists`;
+      return errorResponse(res, message);
+    }
+
     credentials.password = await getHashedPassword(credentials?.password);
     const user = await createUser(credentials);
     const message = 'User created successfully';
-    return successResponseWithData(res, message, { ...generateTokens(user) });
+    const userData = { email: user.email, ...generateTokens(user) };
+    return successResponseWithData(res, message, userData);
   } catch (err) {
     const errorData = getErrorData(err);
     res.status(400).json(errorData);
@@ -40,7 +50,7 @@ export const Login = async (req, res) => {
     }
   } catch (err) {
     const errorData = getErrorData(err);
-    res.status(400).json(errorData);
+    return errorResponseWithData(res, 'An error occurred', errorData);
   }
 };
 

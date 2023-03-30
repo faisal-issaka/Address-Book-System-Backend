@@ -21,7 +21,16 @@ export const errorResponse = (res, msg) => {
     status: 0,
     message: msg,
   };
-  return res.status(500).json(data);
+  return res.status(400).json(data);
+};
+
+export const errorResponseWithData = (res, msg, data) => {
+  const resp = {
+    status: 0,
+    message: msg,
+    data,
+  };
+  return res.status(400).json(resp);
 };
 
 export const notFoundResponse = (res, msg) => {

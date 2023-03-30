@@ -68,7 +68,7 @@ export const validateUser = (passwordIsValid, user, res) => {
     delete data.password;
     return successResponseWithData(res, 'User logged in successfully', data);
   }
-  return errorResponse(400, 'Invalid Email Address or Password');
+  return errorResponse(res, 'Invalid Email Address or Password');
 };
 
 export const userExists = async (id) => {
