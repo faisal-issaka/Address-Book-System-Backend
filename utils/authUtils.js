@@ -72,10 +72,12 @@ export const validateUser = (passwordIsValid, user, res) => {
 };
 
 export const userExists = async (id) => {
+  console.log(id);
   let userData = {};
   await UserModel
-    .findOne({ _id: id }, '_id email firstName lastName gender mobileNumber picture')
+    .findOne({ _id: id })
     .then((user) => {
+      console.log(user);
       userData = user;
     }).catch((err) => {
       console.error(err);
