@@ -20,8 +20,15 @@ import { createUser, findUser, updateUser } from '../services/authServices.js';
 
 export const Register = async (req, res) => {
   const credentials = req.body;
-  const data = '+password email';
+  const {
+    firstName, lastName, email, password,
+  } = credentials;
+  if (!firstName || !lastName || !email || !password) {
+    return errorResponse(res, 'Invalid credentials');
+  }
+
   try {
+    const data = '+password email';
     const findOneUser = await findUser(credentials.email, data);
     if (findOneUser) {
       const message = `Email ${credentials.email} already exists`;
