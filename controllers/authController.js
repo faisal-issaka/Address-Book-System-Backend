@@ -11,7 +11,10 @@ import {
   userExists,
 } from '../utils/authUtils.js';
 import {
-  errorResponse, errorResponseWithData, successResponseWithData, unauthorizedResponse,
+  errorResponse,
+  errorResponseWithData,
+  successResponseWithData,
+  unauthorizedResponse,
 } from '../utils/apiResponse.js';
 import { createUser, findUser, updateUser } from '../services/authServices.js';
 
@@ -28,7 +31,12 @@ export const Register = async (req, res) => {
     credentials.password = await getHashedPassword(credentials?.password);
     const user = await createUser(credentials);
     const message = 'User created successfully';
-    const userData = { email: user.email, ...generateTokens(user) };
+    const userData = {
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      ...generateTokens(user),
+    };
     return successResponseWithData(res, message, userData);
   } catch (err) {
     const errorData = getErrorData(err);
@@ -42,7 +50,10 @@ export const Login = async (req, res) => {
   try {
     const user = await findUser(credentials.email, data);
     if (user) {
-      const passwordIsValid = await bcrypt.compare(credentials.password, user.password);
+      const passwordIsValid = await bcrypt.compare(
+        credentials.password,
+        user.password,
+      );
       validateUser(passwordIsValid, user, res);
     } else {
       const message = 'Invalid Phone Number or Password';
