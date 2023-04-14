@@ -47,7 +47,7 @@ export const Register = async (req, res) => {
     return successResponseWithData(res, message, userData);
   } catch (err) {
     const errorData = getErrorData(err);
-    res.status(400).json(errorData);
+    return errorResponseWithData(res, 'An error occurred', errorData);
   }
 };
 
