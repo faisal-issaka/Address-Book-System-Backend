@@ -3,7 +3,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { UserModel } from '../models/index.js';
-import { errorResponse, successResponseWithData } from './apiResponse.js';
+import { errorResponse, errorResponseWithData, successResponseWithData } from './apiResponse.js';
 
 export const generateTokens = (user) => {
   if (user) {
@@ -51,7 +51,9 @@ export const getErrorData = (err) => {
     message = errorMessages[code];
   } else {
     const errorKeys = Object.keys(err.errors || {});
-    message = errorKeys?.length > 0 ? 'Required Field condition not satisfied' : message;
+    message = errorKeys?.length > 0
+      ? 'Required Field condition not satisfied'
+      : message;
   }
 
   return {
@@ -71,15 +73,24 @@ export const validateUser = (passwordIsValid, user, res) => {
   return errorResponse(res, 'Invalid Email Address or Password');
 };
 
+export const checkRequiredFields = (credentials, res, fields) => {
+  const errors = [];
+  fields.forEach((elt) => {
+    if (!Object.keys(credentials).includes(elt) || credentials[elt] === '') {
+      errors.push(`${elt} is required!`);
+    }
+  });
+
+  return errors.length && errorResponseWithData(res, 'Invalid credentials', errors);
+};
+
 export const userExists = async (id) => {
-  console.log(id);
   let userData = {};
-  await UserModel
-    .findOne({ _id: id })
+  await UserModel.findOne({ _id: id })
     .then((user) => {
-      console.log(user);
       userData = user;
-    }).catch((err) => {
+    })
+    .catch((err) => {
       console.error(err);
     });
 

@@ -9,6 +9,7 @@ import {
   getErrorData,
   validateUser,
   userExists,
+  checkRequiredFields,
 } from '../utils/authUtils.js';
 import {
   errorResponse,
@@ -20,12 +21,13 @@ import { createUser, findUser, updateUser } from '../services/authServices.js';
 
 export const Register = async (req, res) => {
   const credentials = req.body;
-  const {
-    firstName, lastName, email, password,
-  } = credentials;
-  if (!firstName || !lastName || !email || !password) {
-    return errorResponse(res, 'Invalid credentials');
-  }
+
+  checkRequiredFields(credentials, res, [
+    'firstName',
+    'lastName',
+    'email',
+    'password',
+  ]);
 
   try {
     const data = '+password email';
@@ -54,6 +56,12 @@ export const Register = async (req, res) => {
 export const Login = async (req, res) => {
   const credentials = req.body;
   const data = '+password email firstName lastName gender mobileNumber picture';
+
+  checkRequiredFields(credentials, res, [
+    'email',
+    'password',
+  ]);
+
   try {
     const user = await findUser(credentials.email, data);
     if (user) {
