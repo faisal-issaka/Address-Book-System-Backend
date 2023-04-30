@@ -21,13 +21,16 @@ import { createUser, findUser, updateUser } from '../services/authServices.js';
 
 export const Register = async (req, res) => {
   const credentials = req.body;
-
-  checkRequiredFields(credentials, res, [
+  const isRequiredFieldsPassed = checkRequiredFields(credentials, res, [
     'firstName',
     'lastName',
     'email',
     'password',
   ]);
+
+  if (isRequiredFieldsPassed.status) {
+    return errorResponseWithData(res, 'Invalid credentials', isRequiredFieldsPassed.errors);
+  }
 
   try {
     const data = '+password email';
@@ -57,10 +60,14 @@ export const Login = async (req, res) => {
   const credentials = req.body;
   const data = '+password email firstName lastName gender mobileNumber picture';
 
-  checkRequiredFields(credentials, res, [
+  const isRequiredFieldsPassed = checkRequiredFields(credentials, res, [
     'email',
     'password',
   ]);
+
+  if (isRequiredFieldsPassed.status) {
+    return errorResponseWithData(res, 'Invalid credentials', isRequiredFieldsPassed.errors);
+  }
 
   try {
     const user = await findUser(credentials.email, data);

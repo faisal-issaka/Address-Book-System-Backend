@@ -3,7 +3,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { UserModel } from '../models/index.js';
-import { errorResponse, errorResponseWithData, successResponseWithData } from './apiResponse.js';
+import { errorResponse, successResponseWithData } from './apiResponse.js';
 
 export const generateTokens = (user) => {
   if (user) {
@@ -81,7 +81,10 @@ export const checkRequiredFields = (credentials, res, fields) => {
     }
   });
 
-  return errors.length && errorResponseWithData(res, 'Invalid credentials', errors);
+  return {
+    status: errors.length > 0,
+    errors,
+  };
 };
 
 export const userExists = async (id) => {
