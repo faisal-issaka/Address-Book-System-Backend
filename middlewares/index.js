@@ -12,3 +12,12 @@ export const verifyToken = (req, res, next) => {
     return user ? next(user) : errorResponse(res, 'Token not valid');
   });
 };
+
+export const verifyAccess = (req, res, next) => {
+  const token = req.headers?.authorization?.split(' ')[1];
+  jwt.verify(token, process.env.ACCESS_TOKEN_KEY, async (err, data) => {
+    if (err) return errorResponse(res, 'Token not valid');
+    const user = await userExists(data.user_id);
+    return user ? next() : errorResponse(res, 'Token not valid');
+  });
+};
